@@ -1,5 +1,7 @@
 {
     "hlwetf":["kweb","cweb"],
     "hlw":["阿里","腾讯","jd","pinduoduo","美团","baidu","weibo"],
-    "xny":["理想","小鹏","蔚来","零跑"]
+    "xny":["理想","小鹏","蔚来","零跑"],
+    "big7": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA"]
+    
 }
