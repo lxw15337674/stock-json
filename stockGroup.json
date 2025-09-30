@@ -1,7 +1,6 @@
 {
-    "hlwetf":["kweb","cweb"],
-    "hlw":["阿里","腾讯","jd","pinduoduo","美团","baidu","weibo"],
-    "xny":["09866","09868","02015","09863"],
+    "hlwetf": ["KWEB", "CWEB"],
+    "hlw": ["阿里", "腾讯", "JD", "拼多多", "美团", "百度", "微博"],
+    "xny": ["09866", "09868", "02015", "09863"],
     "big7": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA"]
-    
 }
