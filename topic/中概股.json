@@ -1,5 +1,7 @@
 {
-    "aliases": [],
+    "aliases": [
+        "hlw"
+    ],
     "stocks": [
         "阿里",
         "腾讯",
