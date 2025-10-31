@@ -27,8 +27,8 @@ def load_json_files(topic_dir: str) -> Dict[str, Any]:
     
     stock_group = {}
     
-    # 遍历目录下的所有JSON文件
-    for json_file in topic_path.glob("*.json"):
+    # 遍历目录下的所有JSON文件（包括子目录）
+    for json_file in topic_path.rglob("*.json"):
         # 文件名（不含扩展名）作为题材名称
         topic_name = json_file.stem
         
