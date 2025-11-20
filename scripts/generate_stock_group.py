@@ -80,7 +80,7 @@ def load_json_files(topic_dir: str) -> Dict[str, Any]:
 
 def main():
     # 定义题材目录和输出文件
-    topic_dir = "topic"  # 可以根据实际情况修改
+    topic_dir = "topics-json"  # 可以根据实际情况修改
     output_file = "stockGroup.json"
     
     # 加载所有题材文件

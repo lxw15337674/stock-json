@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-从 stocks 目录读取各个目录的 md 文件，提取题材信息并生成 topics 目录下的 MD 文件
+从 stocks 目录读取各个目录的 md 文件，提取题材信息并生成 topics-mds 目录下的 MD 文件
 """
 
 import re
@@ -183,7 +183,7 @@ def generate_main_topic_file(topic_name: str, topic_info: Dict, output_file: Pat
         for stock in topic_info['stocks']:
             # 生成链接到股票文件，指向具体的三级标题
             if stock in stock_to_path:
-                # 计算相对路径：从 topics/主题材/ 到 stocks/...
+                # 计算相对路径：从 topics-mds/主题材/ 到 stocks/...
                 stock_path = stock_to_path[stock]
                 # 使用主题材名称作为锚点，指向三级标题
                 # Markdown 中 ### 标题 的锚点通常是 #标题
@@ -275,7 +275,7 @@ def generate_topic_files(main_topics: Dict[str, Dict],
 
 def main():
     stocks_dir = Path("stocks")
-    output_dir = Path("topics")
+    output_dir = Path("topics-mds")
     
     if not stocks_dir.exists():
         print(f"错误: {stocks_dir} 目录不存在")
