@@ -6,12 +6,14 @@ on:
       - main
       - master
     paths:
+      - 'topics/**'
       - 'topics-json/**'
   pull_request:
     branches:
       - main
       - master
     paths:
+      - 'topics/**'
       - 'topics-json/**'
   workflow_dispatch:  # 允许手动触发
 

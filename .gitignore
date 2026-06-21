@@ -1,0 +1,3 @@
+# 由 scripts/generate_topics_jsons.py 从 topics/ 生成
+topics-jsons/*
+!topics-jsons/.gitkeep

@@ -1,14 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-从题材目录下的JSON文件生成stockGroup.json
-文件名作为题材名称，每个文件应包含alias和股票组信息
+从题材 JSON 目录生成 stockGroup.json。
+先运行 generate_topics_jsons.py 从 topics/ 生成 topics-jsons/，
+再合并 topics-json/ 与 topics-jsons/ 下的 JSON 文件。
 """
 
 import json
-import os
+import subprocess
+import sys
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List
+
+TOPIC_DIRS: List[str] = ["topics-json", "topics-jsons"]
+
+
+def run_generate_topics_jsons() -> None:
+    """先从 topics/ 生成 topics-jsons/。"""
+    script = Path(__file__).parent / "generate_topics_jsons.py"
+    repo_root = Path(__file__).parent.parent
+    print("运行 generate_topics_jsons.py ...")
+    subprocess.run([sys.executable, str(script)], check=True, cwd=repo_root)
+
 
 def load_json_files(topic_dir: str) -> Dict[str, Any]:
     """
@@ -79,13 +92,17 @@ def load_json_files(topic_dir: str) -> Dict[str, Any]:
     return stock_group
 
 def main():
-    # 定义题材目录和输出文件
-    topic_dir = "topics-json"  # 可以根据实际情况修改
+    run_generate_topics_jsons()
+
     output_file = "stockGroup.json"
-    
-    # 加载所有题材文件
-    stock_group = load_json_files(topic_dir)
-    
+    stock_group: Dict[str, Any] = {}
+
+    for topic_dir in TOPIC_DIRS:
+        loaded = load_json_files(topic_dir)
+        if loaded:
+            print(f"从 {topic_dir} 加载 {len(loaded)} 个题材")
+            stock_group.update(loaded)
+
     if not stock_group:
         print("未找到任何题材文件")
         return
