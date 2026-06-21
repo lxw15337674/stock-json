@@ -8,6 +8,8 @@ on:
     paths:
       - 'topics/**'
       - 'topics-json/**'
+      - 'scripts/generate_stock_group.py'
+      - 'scripts/generate_topics_jsons.py'
   pull_request:
     branches:
       - main
@@ -15,24 +17,40 @@ on:
     paths:
       - 'topics/**'
       - 'topics-json/**'
-  workflow_dispatch:  # 允许手动触发
+      - 'scripts/generate_stock_group.py'
+      - 'scripts/generate_topics_jsons.py'
+  workflow_dispatch:
 
 jobs:
   generate:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-    
+      contents: write
+
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-        
+
       - name: 设置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+
       - name: 运行生成脚本
         run: python3 scripts/generate_stock_group.py
+
+      - name: 提交 stockGroup.json
+        if: github.event_name != 'pull_request'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add stockGroup.json
+
+          if git diff --staged --quiet; then
+            echo "stockGroup.json 无变化"
+          else
+            git commit -m "自动更新 stockGroup.json [skip ci]"
+            git push
+          fi
