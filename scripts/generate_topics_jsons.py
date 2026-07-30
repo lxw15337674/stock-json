@@ -6,19 +6,15 @@
 Markdown 格式：
     # 题材名称
 
-    ## 别名
+    ```alias
+    别名1
+    ```
 
-    - 别名1
-
-    ## 股票
-
-    - 华夏航空
-    - 吉祥航空
-
-    ### 春秋航空
-
-    ### 华夏航空
-    （重复项自动去重，保留首次出现顺序）
+    ```stock
+    华夏航空
+    吉祥航空
+    ```
+    （重复项自动去重，保留首次出现顺序；空行忽略）
 """
 
 import json
@@ -26,55 +22,31 @@ import re
 from pathlib import Path
 from typing import List, Tuple
 
-
-def split_sections(content: str) -> dict[str, str]:
-    """按二级标题拆分内容为 {标题: 正文}。"""
-    sections: dict[str, str] = {}
-    parts = re.split(r"^##\s+", content, flags=re.MULTILINE)
-    for part in parts[1:]:
-        lines = part.split("\n", 1)
-        title = lines[0].strip()
-        body = lines[1] if len(lines) > 1 else ""
-        sections[title] = body
-    return sections
+FENCE_RE = re.compile(
+    r"^```(stock|alias)\s*\n(.*?)(?:\n)?^```",
+    re.MULTILINE | re.DOTALL,
+)
 
 
-def parse_list_items(body: str) -> List[str]:
-    """提取 `- 列表项`。"""
-    return [
-        m.group(1).strip()
-        for line in body.splitlines()
-        if (m := re.match(r"^-\s+(.+)$", line)) and m.group(1).strip()
-    ]
-
-
-def parse_stocks_section(body: str) -> List[str]:
-    """
-    从 ## 股票 正文按文档顺序提取 `- 列表项` 与 `### 三级标题`。
-    两者都可能是股票名；重复项去重，保留首次出现顺序。
-    """
-    stocks: List[str] = []
+def parse_fence_lines(content: str, lang: str) -> List[str]:
+    """提取指定语言代码块中的非空行，去重并保留首次出现顺序。"""
+    items: List[str] = []
     seen: set[str] = set()
-
-    for line in body.splitlines():
-        name = None
-        if m := re.match(r"^-\s+(.+)$", line):
-            name = m.group(1).strip()
-        elif m := re.match(r"^###\s+(.+)$", line):
-            name = m.group(1).strip()
-
-        if name and name not in seen:
-            seen.add(name)
-            stocks.append(name)
-
-    return stocks
+    for match in FENCE_RE.finditer(content):
+        if match.group(1) != lang:
+            continue
+        for line in match.group(2).splitlines():
+            name = line.strip()
+            if name and name not in seen:
+                seen.add(name)
+                items.append(name)
+    return items
 
 
 def parse_topic_md(content: str) -> Tuple[List[str], List[str]]:
     """解析题材 Markdown，返回 (别名列表, 股票列表)。"""
-    sections = split_sections(content)
-    aliases = parse_list_items(sections.get("别名", ""))
-    stocks = parse_stocks_section(sections.get("股票", ""))
+    aliases = parse_fence_lines(content, "alias")
+    stocks = parse_fence_lines(content, "stock")
     return aliases, stocks
 
 
